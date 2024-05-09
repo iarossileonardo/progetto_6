@@ -11,21 +11,22 @@ public class Botte {
 
     public synchronized int entra(Bevitore b) throws Exception{
         while (postiLiberi < 1) {
-            wait();
+            if(litri > 0)
+                wait();
+            else{
+                b.shutdown();
+                return 0;
+            }
         }
         postiLiberi--;
-        int litriBevuti = (int)Math.random() * 2 + 1;
+        int litriBevuti = (int)Math.random() * 20 + 1;
         litri -= litriBevuti;
         System.out.println(b.getNome() + " ha bevuto " + litriBevuti + " litri");
         return (int)Math.random() * 1000 + 2000;
     }
 
-    public synchronized void esci(){
+    public synchronized void esci(Bevitore b){
         postiLiberi++;
-        if (litri > 0) {
-            notifyAll();
-        }
-        //else
-            //GESTIRE CHIUSURA THREAD
+        notifyAll();
     }
 }
